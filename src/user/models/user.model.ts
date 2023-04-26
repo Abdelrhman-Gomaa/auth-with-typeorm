@@ -12,7 +12,7 @@ export class User {
   @Column({ length: 500 })
   lastName: string;
 
-  @Column({ length: 500 })
+  @Column({ length: 500, unique: true })
   userName: string;
 
   @Column({ length: 500 })
