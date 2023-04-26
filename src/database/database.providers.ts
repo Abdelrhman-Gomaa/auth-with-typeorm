@@ -12,7 +12,7 @@ export const databaseProviders = [
         password: process.env.DB_PASSWORD,
         database: process.env.DB_NAME,
         entities: [
-          __dirname + '/../**/*.model{.ts,.js}',
+          __dirname + '/../**/models/*.model{.ts,.js}',
         ],
         synchronize: true,
       });
