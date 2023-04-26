@@ -12,6 +12,9 @@ export class User {
   @Column({ length: 500 })
   lastName: string;
 
+  @Column({ length: 500 })
+  fullName?: string;
+
   @Column({ length: 500, unique: true })
   userName: string;
 

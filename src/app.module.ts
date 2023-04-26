@@ -19,6 +19,7 @@ import { User } from './user/models/user.model';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       autoLoadEntities: true,
+      migrations: ['dist/db/migrations/*.js'],
       synchronize: true,
     }),
     UserModule
