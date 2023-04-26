@@ -41,9 +41,4 @@ export class CreateUserInput {
     @IsNotEmpty()
     @ApiProperty()
     birthDate: number;
-
-    @IsNotEmpty()
-    @IsEnum(UserRoleType)
-    @ApiProperty({ enum: UserRoleType })
-    columnChartType: UserRoleType;
 }

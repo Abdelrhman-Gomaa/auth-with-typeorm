@@ -1,7 +1,9 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post, ValidationPipe } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { User } from './models/user.model';
+import { CreateUserInput } from './input/create-user.input';
+import { LoginWithEmailInput } from './input/email-login.input';
 
 @ApiTags('User')
 @Controller('user')
@@ -16,4 +18,15 @@ export class UserController {
         return await this.userService.findAllUser();
     }
 
+    @ApiOperation({ summary: "Create A new User / Registration" })
+    @Post('/registerAsUser')
+    async register(@Body(ValidationPipe) input: CreateUserInput) {
+        return await this.userService.registerAsUser(input);
+    }
+    
+    @ApiOperation({ summary: "Login with Email to App" })
+    @Post('/loginWithEmail')
+    async loginWithEmail(@Body(ValidationPipe) input: LoginWithEmailInput): Promise<{ accessToken: string; }> {
+        return await this.userService.loginWithEmail(input);
+    }
 }
