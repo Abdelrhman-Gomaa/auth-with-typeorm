@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Put, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, UseGuards, ValidationPipe } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { User } from './models/user.model';
@@ -7,6 +7,7 @@ import { LoginWithEmailInput } from './input/email-login.input';
 import { LoginWithPhoneNumberInput } from './input/phone-number-login.input';
 import { ChangePasswordInput } from './input/change.password.input';
 import { CurrentUser } from 'src/auth/auth-user.decorator';
+import { AdminGuard } from 'src/auth/admin.guard';
 
 @ApiTags('User')
 @Controller('user')
@@ -15,6 +16,7 @@ export class UserController {
         private readonly userService: UserService
     ) { }
 
+    @UseGuards(AdminGuard)
     @ApiOperation({ summary: "Find All User" })
     @Get()
     async findAllUser(): Promise<User[]> {
