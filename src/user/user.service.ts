@@ -9,6 +9,7 @@ import { UserRoleType } from './user.enum';
 import { format } from 'date-fns';
 import { LoginWithEmailInput } from './input/email-login.input';
 import { TokenPayload } from 'src/auth/auth-token-payload.interface';
+import { LoginWithPhoneNumberInput } from './input/phone-number-login.input';
 
 @Injectable()
 export class UserService {
@@ -59,8 +60,33 @@ export class UserService {
         return { accessToken };
     }
 
+    async loginWithPhoneNumber(input: LoginWithPhoneNumberInput): Promise<{ accessToken: string; }> {
+        const user = await this.validationUserPasswordLoginPhoneNumber(input);
+        if (!user) {
+            throw new UnauthorizedException('Invalid Credentials');
+        }
+        const payload: TokenPayload = { userId: user.id };
+        const accessToken = jwt.sign(payload, process.env.JWT_SECRET);
+        return { accessToken };
+    }
+
     private async validationUserPassword(input: LoginWithEmailInput) {
         const user = await this.userRepo.findOne({ where: { email: input.email } });
+        if (user) {
+            await this.matchPassword(input.password, user.password);
+            const userValidate = {
+                id: user.id,
+                email: user.email,
+                password: user.password
+            };
+            return userValidate;
+        } else {
+            return null;
+        }
+    }
+
+    private async validationUserPasswordLoginPhoneNumber(input: LoginWithPhoneNumberInput) {
+        const user = await this.userRepo.findOne({ where: { phoneNumber: input.phoneNumber } });
         if (user) {
             await this.matchPassword(input.password, user.password);
             const userValidate = {
