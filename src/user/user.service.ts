@@ -20,7 +20,17 @@ export class UserService {
     ) { }
 
     async findAllUser() {
-        return await this.userRepo.find();
+        return await this.userRepo.find({
+            select:{
+                id: true,
+                fullName: true,
+                email: true,
+                phoneNumber: true,
+                nation: true,
+                birthDate:true,
+                createdAt: true,
+            }
+        });
     }
 
     async getUser(userId: string) {
@@ -36,18 +46,13 @@ export class UserService {
                 { email: input.email }
             ]
         });
-        console.log(existUser);
         if (existUser) throw new ConflictException('userName or email already exist');
         const hashPassword = await bcrypt.hash(input.password, 12);
         const birthDate = format(new Date(input.birthDate), 'yyyy/MM/dd');
         try {
             return await this.userRepo.insert({
-                firstName: input.firstName,
-                lastName: input.lastName,
-                userName: input.userName,
-                email: input.email,
-                phoneNumber: input.phoneNumber,
-                nation: input.nation,
+                ...input,
+                fullName: `${input.firstName} ${input.lastName}`,
                 birthDate,
                 password: hashPassword,
                 role: UserRoleType.USER,
