@@ -10,6 +10,7 @@ import { format } from 'date-fns';
 import { LoginWithEmailInput } from './input/email-login.input';
 import { TokenPayload } from 'src/auth/auth-token-payload.interface';
 import { LoginWithPhoneNumberInput } from './input/phone-number-login.input';
+import { ChangePasswordInput } from './input/change.password.input';
 
 @Injectable()
 export class UserService {
@@ -20,6 +21,12 @@ export class UserService {
 
     async findAllUser() {
         return await this.userRepo.find();
+    }
+
+    async getUser(userId: string) {
+        const user = await this.userRepo.findOne({ where: { id: userId } });
+        if (!user) throw new UnauthorizedException('Invalid User');
+        return user;
     }
 
     async registerAsUser(input: CreateUserInput) {
@@ -70,6 +77,18 @@ export class UserService {
         return { accessToken };
     }
 
+    async changePassword(currentUser: string, input: ChangePasswordInput) {
+        const user = await this.userRepo.findOne({ where: { id: currentUser } });
+        if (!user) throw new UnauthorizedException('Invalid User');
+        await this.matchPassword(input.oldPassword, user.password);
+        if (input.newPassword !== input.confirmPassword) throw new ConflictException('New Password Not Confirmed');
+        if (input.newPassword === input.oldPassword) throw new ConflictException('Old Password and New One are Same');
+        const hashPassword = await bcrypt.hash(input.newPassword, 12);;
+        return await this.userRepo.update(user.id, {
+            password: hashPassword
+        });
+    }
+
     private async validationUserPassword(input: LoginWithEmailInput) {
         const user = await this.userRepo.findOne({ where: { email: input.email } });
         if (user) {
@@ -103,12 +122,5 @@ export class UserService {
     private async matchPassword(password: string, hash: string) {
         const isMatched = hash && (await bcrypt.compare(password, hash));
         if (!isMatched) throw new ConflictException('incorrect Password');
-    }
-
-
-    async getUser(userId: string) {
-        const user = await this.userRepo.findOne({ where: { id: userId } });
-        if (!user) throw new UnauthorizedException('Invalid User');
-        return user;
     }
 }

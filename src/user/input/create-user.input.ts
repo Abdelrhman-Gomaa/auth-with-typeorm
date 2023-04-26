@@ -1,32 +1,36 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsString, Matches, MaxLength, MinLength, minLength } from "class-validator";
-import { UserRoleType } from '../user.enum';
-
+import { IsNotEmpty, IsString, Matches, MaxLength, MinLength } from "class-validator";
 
 export class CreateUserInput {
     @IsString()
+    @IsNotEmpty()
     @ApiProperty()
     firstName: string;
 
     @IsString()
+    @IsNotEmpty()
     @ApiProperty()
     lastName: string;
 
     @IsString()
+    @IsNotEmpty()
     @ApiProperty()
     userName: string;
 
     @IsString()
+    @IsNotEmpty()
     @ApiProperty()
     email: string;
 
     @IsString()
+    @IsNotEmpty()
     @ApiProperty()
     phoneNumber: string;
 
     @IsString()
     @MinLength(8)
     @MaxLength(20)
+    @IsNotEmpty()
     @Matches(
         /((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/,
         { message: 'Password too week' }
@@ -35,6 +39,7 @@ export class CreateUserInput {
     password: string;
 
     @IsString()
+    @IsNotEmpty()
     @ApiProperty()
     nation: string;
 
