@@ -12,12 +12,18 @@ export const databaseProviders = [
         password: process.env.DB_PASSWORD,
         database: process.env.DB_NAME,
         entities: [
-            __dirname + '/../**/*.model{.ts,.js}',
+          __dirname + '/../**/*.model{.ts,.js}',
         ],
         synchronize: true,
       });
 
-      return dataSource.initialize();
+      return dataSource.initialize()
+        .then(() => {
+          console.log("Data Source has been initialized! ✔✔✔✔✔✔✔✔✔✔✔✔✔✔✔");
+        })
+        .catch((err) => {
+          console.error("Error during Data Source initialization ❌❌❌❌❌❌❌❌❌", err);
+        });
     },
   },
 ];
