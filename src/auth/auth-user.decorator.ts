@@ -8,7 +8,7 @@ export const CurrentUser = createParamDecorator((fieldName, context: ExecutionCo
     const request = context.switchToHttp().getRequest();
     const token = request.header('Authorization').split(' ')[1];
     if (!token) throw new BaseHttpException(ErrorCodeEnum.UNAUTHORIZED);
-    const { userId }  = <TokenPayload>jwt.verify(token, process.env.JWT_SECRET);
+    const { userId } = <TokenPayload>jwt.verify(token, process.env.JWT_SECRET);
     if (!userId) return false;
-    return userId
+    return userId;
 });

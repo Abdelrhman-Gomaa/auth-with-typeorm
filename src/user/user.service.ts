@@ -35,9 +35,15 @@ export class UserService {
         });
     }
 
+    async me(currentUser: string) {
+        return await this.userRepo.findOne({
+            where: { id: currentUser },
+        });
+    }
+
     async getUser(userId: string) {
         const user = await this.userRepo.findOne({ where: { id: userId } });
-        if (!user) throw new BaseHttpException(ErrorCodeEnum.INVALID_USER)
+        if (!user) throw new BaseHttpException(ErrorCodeEnum.INVALID_USER);
         return user;
     }
 
@@ -48,7 +54,7 @@ export class UserService {
                 { email: input.email }
             ]
         });
-        if (existUser) throw new BaseHttpException(ErrorCodeEnum.USERNAME_OR_EMAIL_ALREADY_EXIST)
+        if (existUser) throw new BaseHttpException(ErrorCodeEnum.USERNAME_OR_EMAIL_ALREADY_EXIST);
         const hashPassword = await bcrypt.hash(input.password, 12);
         const birthDate = format(new Date(input.birthDate), 'yyyy/MM/dd');
         try {

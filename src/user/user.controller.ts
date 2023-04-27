@@ -23,6 +23,13 @@ export class UserController {
         return await this.userService.findAllUser();
     }
 
+    @UseGuards(AdminGuard)
+    @ApiOperation({ summary: "Find All User" })
+    @Get('/me')
+    async me(@CurrentUser() currentUser: string): Promise<User> {
+        return await this.userService.me(currentUser);
+    }
+
     @ApiOperation({ summary: "Create A new User / Registration" })
     @Post('/registerAsUser')
     async register(@Body(ValidationPipe) input: CreateUserInput) {
