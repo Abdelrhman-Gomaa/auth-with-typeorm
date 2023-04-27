@@ -24,7 +24,7 @@ export class UserController {
     }
 
     @UseGuards(AdminGuard)
-    @ApiOperation({ summary: "Find All User" })
+    @ApiOperation({ summary: "Find Current User Data" })
     @Get('/me')
     async me(@CurrentUser() currentUser: string): Promise<User> {
         return await this.userService.me(currentUser);
