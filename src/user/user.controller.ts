@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Put, UseGuards, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Post, Patch, UseGuards, ValidationPipe } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { User } from './models/user.model';
@@ -49,7 +49,7 @@ export class UserController {
     }
 
     @ApiOperation({ summary: "Login with Phone Number to App" })
-    @Put('/changePassword')
+    @Patch('/changePassword')
     async changePassword(@CurrentUser() userId: string, @Body(ValidationPipe) input: ChangePasswordInput) {
         return await this.userService.changePassword(userId, input);
     }
